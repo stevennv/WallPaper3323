@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -21,10 +21,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.DetailImageActivity" />
-        <!--<activity-->
-            <!--android:name=".activity.WallPaperActivity"-->
-            <!--android:label="@string/title_activity_wall_paper"-->
-            <!--android:theme="@style/AppTheme.NoActionBar"></activity>-->
+        <!-- <activity -->
+        <!-- android:name=".activity.WallPaperActivity" -->
+        <!-- android:label="@string/title_activity_wall_paper" -->
+        <!-- android:theme="@style/AppTheme.NoActionBar"></activity> -->
+        <activity android:name=".activity.LikedImageActivity"></activity>
     </application>
 
 </manifest>

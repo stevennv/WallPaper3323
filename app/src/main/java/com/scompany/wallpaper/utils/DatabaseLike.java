@@ -72,7 +72,7 @@ public class DatabaseLike extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<ImageFavorite> getAllStyle() {
+    public List<ImageFavorite> getAllImage() {
         List<ImageFavorite> contactList = new ArrayList<ImageFavorite>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_NAME;

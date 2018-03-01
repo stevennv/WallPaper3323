@@ -1,10 +1,12 @@
 package com.scompany.wallpaper.activity;
 
 import android.app.ProgressDialog;
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -26,6 +28,8 @@ import com.scompany.wallpaper.utils.Contanst;
 import com.scompany.wallpaper.utils.DatabaseLike;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Date;
 
 public class DetailImageActivity extends AppCompatActivity implements View.OnClickListener {
     private ViewPager viewPager;
@@ -42,6 +46,8 @@ public class DetailImageActivity extends AppCompatActivity implements View.OnCli
     private DatabaseLike database;
     private ImageFavorite imageFavorite;
     private boolean checkLike;
+    private Bitmap bitmap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +70,7 @@ public class DetailImageActivity extends AppCompatActivity implements View.OnCli
             viewPager.setAdapter(adapter);
             viewPager.setCurrentItem(pos);
             urlImage = data.getImages()[viewPager.getCurrentItem()].getImg();
-            nameImage = urlImage.replace("/", "");
+            nameImage = String.valueOf(new Date().getTime());
         }
         checkLikeImage();
         imgCopyLink.setOnClickListener(this);
@@ -78,10 +84,14 @@ public class DetailImageActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_copy_link:
-                Toast.makeText(this, data.getImages()[viewPager.getCurrentItem()].getSrc(), Toast.LENGTH_SHORT).show();
-                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                android.content.ClipData clip = android.content.ClipData.newPlainText("text label", "text to clip");
-                clipboard.setPrimaryClip(clip);
+                WallpaperManager m = WallpaperManager.getInstance(this);
+                bitmap = BitmapFactory.decodeFile(myImageFile.getPath());
+                try {
+                    m.setBitmap(bitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.d("onClick213", "onClick: " + e.getMessage());
+                }
                 break;
             case R.id.img_download:
                 urlImage = data.getImages()[viewPager.getCurrentItem()].getImg();
@@ -128,10 +138,11 @@ public class DetailImageActivity extends AppCompatActivity implements View.OnCli
             public void onComplete(Bitmap result) {
                 final Bitmap.CompressFormat mFormat = Bitmap.CompressFormat.JPEG;
                         /* don't forget to include the extension into the file name */
-
+                nameImage = String.valueOf(new Date().getTime());
                 myImageFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() +
                         File.separator + "WallPaper_Android/" + nameImage);
                 Log.d("CHECK_FILE_PATH", nameImage);
+                bitmap = BitmapFactory.decodeFile(myImageFile.getPath());
                 BasicImageDownloader.writeToDisk(myImageFile, result, new BasicImageDownloader.OnBitmapSaveListener() {
                     @Override
                     public void onBitmapSaved() {
@@ -174,7 +185,7 @@ public class DetailImageActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void likeImage() {
-        imageFavorite = new ImageFavorite(nameImage, data.getImages()[viewPager.getCurrentItem()].getSrc());
+        imageFavorite = new ImageFavorite(nameImage, data.getImages()[viewPager.getCurrentItem()].getImg(), true);
         if (checkLike) {
             database.deleteImage(imageFavorite);
             imgLike.setImageResource(R.drawable.ic_like);
