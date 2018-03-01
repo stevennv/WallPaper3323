@@ -13,7 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.WallPaperActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,6 +21,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.DetailImageActivity" />
+        <!--<activity-->
+            <!--android:name=".activity.WallPaperActivity"-->
+            <!--android:label="@string/title_activity_wall_paper"-->
+            <!--android:theme="@style/AppTheme.NoActionBar"></activity>-->
     </application>
 
 </manifest>

@@ -38,7 +38,6 @@ public class DetailImageActivity extends AppCompatActivity implements View.OnCli
     private String urlImage;
     private String nameImage;
     private ProgressBar progressBar;
-    private String imagePath;
     private File myImageFile;
     private DatabaseLike database;
     private ImageFavorite imageFavorite;
