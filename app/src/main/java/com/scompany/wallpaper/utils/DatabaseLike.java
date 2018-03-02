@@ -53,10 +53,10 @@ public class DatabaseLike extends SQLiteOpenHelper {
         db.close();
     }
 
-    public ImageFavorite getLikeByName(String name) {
+    public ImageFavorite getLikeBySrc(String name) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_NAME, new String[]{KEY_ID,
-                        KEY_NAME, KEY_SRC}, KEY_NAME + "=?",
+                        KEY_NAME, KEY_SRC}, KEY_SRC + "=?",
                 new String[]{name}, null, null, null, null);
         if (cursor != null) {
             cursor.moveToNext();

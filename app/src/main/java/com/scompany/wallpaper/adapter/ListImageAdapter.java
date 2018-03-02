@@ -55,7 +55,7 @@ public class ListImageAdapter extends PagerAdapter {
         View itemView;
         LayoutInflater mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         itemView = mLayoutInflater.inflate(R.layout.item_image_detail, container, false);
-        ZoomageView imgDetail = itemView.findViewById(R.id.img_detail);
+        ImageView imgDetail = itemView.findViewById(R.id.img_detail);
         Glide.with(context).load(list[position].getImg()).into(imgDetail);
         container.addView(itemView);
         return itemView;

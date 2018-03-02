@@ -1,8 +1,10 @@
 package com.scompany.wallpaper.activity;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.WallpaperManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -24,6 +26,7 @@ import com.scompany.wallpaper.adapter.ListImageAdapter;
 import com.scompany.wallpaper.model.Data;
 import com.scompany.wallpaper.model.ImageFavorite;
 import com.scompany.wallpaper.utils.BasicImageDownloader;
+import com.scompany.wallpaper.utils.CommonUtil;
 import com.scompany.wallpaper.utils.Contanst;
 import com.scompany.wallpaper.utils.DatabaseLike;
 
@@ -72,7 +75,21 @@ public class DetailImageActivity extends AppCompatActivity implements View.OnCli
             urlImage = data.getImages()[viewPager.getCurrentItem()].getImg();
             nameImage = String.valueOf(new Date().getTime());
         }
-        checkLikeImage();
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                checkLikeImage(data.getImages()[viewPager.getCurrentItem()].getImg());
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
+        checkLikeImage(urlImage);
         imgCopyLink.setOnClickListener(this);
         imgDownload.setOnClickListener(this);
         imgShare.setOnClickListener(this);
@@ -84,26 +101,42 @@ public class DetailImageActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_copy_link:
-                WallpaperManager m = WallpaperManager.getInstance(this);
-                bitmap = BitmapFactory.decodeFile(myImageFile.getPath());
-                try {
-                    m.setBitmap(bitmap);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.d("onClick213", "onClick: " + e.getMessage());
-                }
+                AlertDialog dialog = new AlertDialog.Builder(this)
+                        .setMessage("Do you want set this image to wall paper?")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                WallpaperManager m = WallpaperManager.getInstance(DetailImageActivity.this);
+                                bitmap = BitmapFactory.decodeFile(myImageFile.getPath());
+                                try {
+                                    m.setBitmap(bitmap);
+                                    Toast.makeText(DetailImageActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Log.d("onClick213", "onClick: " + e.getMessage());
+                                }
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        }).show();
+
                 break;
             case R.id.img_download:
                 urlImage = data.getImages()[viewPager.getCurrentItem()].getImg();
-                downloadImage(urlImage);
+                downloadImage(urlImage, false);
                 break;
             case R.id.img_share:
                 urlImage = data.getImages()[viewPager.getCurrentItem()].getImg();
                 try {
                     shareImage();
                 } catch (Exception e) {
-                    downloadImage(urlImage);
-                    shareImage();
+                    downloadImage(urlImage, true);
+
                 }
                 break;
             case R.id.img_like:
@@ -112,56 +145,68 @@ public class DetailImageActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    private void downloadImage(String url) {
-        final ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setMessage("Please wait!!!");
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
-        BasicImageDownloader downloader = new BasicImageDownloader(new BasicImageDownloader.OnImageLoaderListener() {
-            @Override
-            public void onError(BasicImageDownloader.ImageError error) {
+    private void downloadImage(String url, final boolean isShare) {
+        try {
+            database.getLikeBySrc(url);
+            Toast.makeText(this, "This image downloaded!!!", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            if (CommonUtil.isOnline(this)) {
+                final ProgressDialog dialog = new ProgressDialog(this);
+                dialog.setMessage("Please wait!!!");
+                dialog.setCancelable(false);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
+                BasicImageDownloader downloader = new BasicImageDownloader(new BasicImageDownloader.OnImageLoaderListener() {
+                    @Override
+                    public void onError(BasicImageDownloader.ImageError error) {
 
-            }
+                    }
 
-            @Override
-            public void onProgressChange(int percent) {
-                if (percent != 100) {
-                    progressBar.setVisibility(View.VISIBLE);
-                    progressBar.setProgress(percent);
-                } else {
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
+                    @Override
+                    public void onProgressChange(int percent) {
+                        if (percent != 100) {
+                            progressBar.setVisibility(View.VISIBLE);
+                            progressBar.setProgress(percent);
+                        } else {
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    }
 
-            @Override
-            public void onComplete(Bitmap result) {
-                final Bitmap.CompressFormat mFormat = Bitmap.CompressFormat.JPEG;
+                    @Override
+                    public void onComplete(Bitmap result) {
+                        final Bitmap.CompressFormat mFormat = Bitmap.CompressFormat.JPEG;
                         /* don't forget to include the extension into the file name */
-                nameImage = String.valueOf(new Date().getTime());
-                myImageFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() +
-                        File.separator + "WallPaper_Android/" + nameImage);
-                Log.d("CHECK_FILE_PATH", nameImage);
-                bitmap = BitmapFactory.decodeFile(myImageFile.getPath());
-                BasicImageDownloader.writeToDisk(myImageFile, result, new BasicImageDownloader.OnBitmapSaveListener() {
-                    @Override
-                    public void onBitmapSaved() {
-                        Toast.makeText(DetailImageActivity.this, "Image saved as: " + myImageFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
-                        dialog.dismiss();
-                    }
+                        nameImage = String.valueOf(new Date().getTime());
+                        myImageFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() +
+                                File.separator + "WallPaper_Android/" + nameImage);
+                        Log.d("CHECK_FILE_PATH", nameImage);
+                        bitmap = BitmapFactory.decodeFile(myImageFile.getPath());
+                        BasicImageDownloader.writeToDisk(myImageFile, result, new BasicImageDownloader.OnBitmapSaveListener() {
+                            @Override
+                            public void onBitmapSaved() {
+                                Toast.makeText(DetailImageActivity.this, "Image saved as: " + myImageFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
+                                dialog.dismiss();
+                                if (isShare) {
+                                    shareImage();
+                                }
+                            }
 
-                    @Override
-                    public void onBitmapSaveError(BasicImageDownloader.ImageError error) {
-                        Toast.makeText(DetailImageActivity.this, "Error code " + error.getErrorCode() + ": " +
-                                error.getMessage(), Toast.LENGTH_LONG).show();
-                        error.printStackTrace();
-                        dialog.dismiss();
-                    }
-                }, mFormat, false);
+                            @Override
+                            public void onBitmapSaveError(BasicImageDownloader.ImageError error) {
+                                Toast.makeText(DetailImageActivity.this, "Error code " + error.getErrorCode() + ": " +
+                                        error.getMessage(), Toast.LENGTH_LONG).show();
+                                error.printStackTrace();
+                                dialog.dismiss();
+                            }
+                        }, mFormat, false);
 
+                    }
+                });
+                downloader.download(url, true);
+            } else {
+                Toast.makeText(this, "Please! Check your connection!!!", Toast.LENGTH_SHORT).show();
             }
-        });
-        downloader.download(url, true);
+        }
     }
 
     private void shareImage() {
@@ -173,9 +218,9 @@ public class DetailImageActivity extends AppCompatActivity implements View.OnCli
         startActivity(Intent.createChooser(intent, "Share image via..."));
     }
 
-    private void checkLikeImage() {
+    private void checkLikeImage(String nameSearch) {
         try {
-            database.getLikeByName(nameImage);
+            database.getLikeBySrc(nameSearch);
             imgLike.setImageResource(R.drawable.ic_liked);
             checkLike = true;
         } catch (Exception e) {

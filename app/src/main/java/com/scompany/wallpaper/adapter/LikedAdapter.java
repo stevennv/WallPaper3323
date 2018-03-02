@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.scompany.wallpaper.R;
 import com.scompany.wallpaper.model.ImageFavorite;
+import com.scompany.wallpaper.utils.DatabaseLike;
 
 import java.util.List;
 
@@ -22,10 +23,12 @@ import java.util.List;
 public class LikedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
     private List<ImageFavorite> list;
+    private DatabaseLike databaseLike;
 
     public LikedAdapter(Context context, List<ImageFavorite> list) {
         this.context = context;
         this.list = list;
+        databaseLike = new DatabaseLike(context);
     }
 
     @Override
@@ -40,7 +43,7 @@ public class LikedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         MyViewHolder myViewHolder = (MyViewHolder) holder;
-        ImageFavorite imageFavorite = list.get(position);
+        final ImageFavorite imageFavorite = list.get(position);
         Glide.with(context).load(imageFavorite.getSrc()).into(myViewHolder.imgData);
         myViewHolder.imgLike.setVisibility(View.VISIBLE);
         myViewHolder.imgLike.setOnClickListener(new View.OnClickListener() {
@@ -53,6 +56,7 @@ public class LikedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 list.remove(position);
                                 notifyDataSetChanged();
+                                databaseLike.deleteImage(imageFavorite);
                                 dialogInterface.dismiss();
                             }
                         })
