@@ -32,7 +32,7 @@ public class LikedImageActivity extends AppCompatActivity {
         rvLiked = findViewById(R.id.rv_liked);
         layoutManager = new GridLayoutManager(this, 2);
         rvLiked.setLayoutManager(layoutManager);
-        list = database.getAllImage();
+        list = database.getAllImage(false);
         adapter = new LikedAdapter(this, list);
         rvLiked.setAdapter(adapter);
     }
