@@ -2,36 +2,24 @@ package com.scompany.wallpaper.activity;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -42,36 +30,32 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.scompany.wallpaper.R;
 import com.scompany.wallpaper.adapter.DataAdapter;
-import com.scompany.wallpaper.adapter.ListImageAdapter;
+import com.scompany.wallpaper.fragment.FragmentCategory;
 import com.scompany.wallpaper.model.Category;
-import com.scompany.wallpaper.model.Data;
-import com.scompany.wallpaper.model.ImageFavorite;
-import com.scompany.wallpaper.model.Images;
-import com.scompany.wallpaper.utils.BasicImageDownloader;
 import com.scompany.wallpaper.utils.Contanst;
-import com.scompany.wallpaper.utils.DatabaseLike;
 
-import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WallPaperActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private RecyclerView rvData;
-    private RecyclerView.LayoutManager layoutManager;
     private DataAdapter adapter;
     private String[] TITLES = {"New", "Polular", "Advice", "Awesome", "Cartoon", "Cute", "Devotion",
             "Engagement", "Famous", "Flirty", "Flowers"};
-    private ImageView imageView;
-    private Spinner spnCategory;
-    private Images[] list;
     private Gson gson;
+    private TabLayout tabs;
+    private ViewPager viewPager;
+    private Toolbar toolbar;
+    private String valuesCategory;
+    private String valuesColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wall_paper);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -126,8 +110,6 @@ public class WallPaperActivity extends AppCompatActivity
         } else if (id == R.id.nav_gallery) {
             Intent intent = new Intent(WallPaperActivity.this, LikedImageActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_slideshow) {
-
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
@@ -144,24 +126,14 @@ public class WallPaperActivity extends AppCompatActivity
     private void iniUI() {
 
         gson = new Gson();
-        rvData = findViewById(R.id.rv_image);
-        layoutManager = new GridLayoutManager(this, 2);
-        rvData.setLayoutManager(layoutManager);
-        imageView = findViewById(R.id.images);
-        spnCategory = findViewById(R.id.spinner);
-        getCategory();
-        spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                Arrays.fill(list, null);
-                getData("http://cdn.skollabs.com/love/v1/" + TITLES[i] + ".js");
-            }
+        tabs = findViewById(R.id.tabs);
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                getData("http://cdn.skollabs.com/love/v1/" + TITLES[0] + ".js");
-            }
-        });
+
+        viewPager = findViewById(R.id.viewpager);
+        tabs.setupWithViewPager(viewPager);
+
+        getCategory();
+//
 //        Glide.with(this).load("http://78.media.tumblr.com/a925866afba3e8d30f967adec19aa4b4/tumblr_ojvoytrANV1vh1qxzo1_500.jpg").into(imageView);
 //        getData("http://cdn.skollabs.com/love/v1/Popular.js");
     }
@@ -178,37 +150,36 @@ public class WallPaperActivity extends AppCompatActivity
         }
     }
 
-    private void getData(String url) {
-        final ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setMessage("Please wait!!!");
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
-        RequestQueue queue = Volley.newRequestQueue(WallPaperActivity.this);
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new com.android.volley.Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    Log.d("123123", response);
-                    Data data = gson.fromJson(response, Data.class);
-                    list = data.getImages();
-                    adapter = new DataAdapter(WallPaperActivity.this, data);
-                    adapter.notifyDataSetChanged();
-                    rvData.setAdapter(adapter);
-                } catch (Exception e) {
-                    Log.e("CHECK_ERROR", e.getMessage());
-                }
-                dialog.dismiss();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                dialog.dismiss();
-            }
-        });
-        queue.add(stringRequest);
-    }
+//    private void getData(String url) {
+//        final ProgressDialog dialog = new ProgressDialog(this);
+//        dialog.setMessage("Please wait!!!");
+//        dialog.setCancelable(false);
+//        dialog.setCanceledOnTouchOutside(false);
+//        dialog.show();
+//        RequestQueue queue = Volley.newRequestQueue(WallPaperActivity.this);
+//
+//        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new com.android.volley.Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                try {
+//                    Log.d("123123", response);
+//                    Data data = gson.fromJson(response, Data.class);
+//                    adapter = new DataAdapter(WallPaperActivity.this, data);
+//                    adapter.notifyDataSetChanged();
+//                    rvData.setAdapter(adapter);
+//                } catch (Exception e) {
+//                    Log.e("CHECK_ERROR", e.getMessage());
+//                }
+//                dialog.dismiss();
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                dialog.dismiss();
+//            }
+//        });
+//        queue.add(stringRequest);
+//    }
 
     private void getCategory() {
         final ProgressDialog dialog = new ProgressDialog(this);
@@ -222,8 +193,9 @@ public class WallPaperActivity extends AppCompatActivity
             public void onResponse(String response) {
                 Category category = gson.fromJson(response, Category.class);
                 TITLES = category.getCategories();
-                ArrayAdapter adapter = new ArrayAdapter(WallPaperActivity.this, android.R.layout.simple_dropdown_item_1line, TITLES);
-                spnCategory.setAdapter(adapter);
+                valuesCategory = gson.toJson(TITLES);
+                valuesColor = gson.toJson(category.getColors());
+                setupViewPager(viewPager);
                 dialog.dismiss();
             }
         }, new Response.ErrorListener() {
@@ -233,5 +205,50 @@ public class WallPaperActivity extends AppCompatActivity
             }
         });
         queue.add(stringRequest);
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new FragmentCategory(), "Category");
+        adapter.addFragment(new FragmentCategory(), "Color");
+        viewPager.setAdapter(adapter);
+    }
+
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Bundle bundle = new Bundle();
+
+            if (position == 0) {
+                bundle.putString(Contanst.CONTENT, valuesCategory);
+            } else {
+                bundle.putString(Contanst.CONTENT, valuesColor);
+            }
+            bundle.putInt("Position", position);
+            mFragmentList.get(position).setArguments(bundle);
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
     }
 }

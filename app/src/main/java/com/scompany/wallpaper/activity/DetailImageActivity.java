@@ -78,6 +78,7 @@ public class DetailImageActivity extends AppCompatActivity implements View.OnCli
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                myImageFile = null;
                 checkLikeImage(data.getImages()[viewPager.getCurrentItem()].getImg());
             }
 
@@ -89,7 +90,6 @@ public class DetailImageActivity extends AppCompatActivity implements View.OnCli
             public void onPageScrollStateChanged(int state) {
             }
         });
-//        downloadImage("https://znews-stc.zdn.vn/static/topic/person/cristiano-ronaldo.jpg",false);
         checkLikeImage(urlImage);
         imgCopyLink.setOnClickListener(this);
         imgDownload.setOnClickListener(this);
@@ -188,7 +188,7 @@ public class DetailImageActivity extends AppCompatActivity implements View.OnCli
                         /* don't forget to include the extension into the file name */
                                         nameImage = String.valueOf(new Date().getTime());
                                         myImageFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() +
-                                                File.separator + "WallPaper_Android/" + nameImage);
+                                                File.separator + "WallPaper_Android/" + nameImage + "." + mFormat.name().toLowerCase());
                                         Log.d("CHECK_FILE_PATH", nameImage);
                                         bitmap = BitmapFactory.decodeFile(myImageFile.getPath());
                                         BasicImageDownloader.writeToDisk(myImageFile, result, new BasicImageDownloader.OnBitmapSaveListener() {
