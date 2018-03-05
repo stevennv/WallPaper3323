@@ -17,9 +17,16 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -32,6 +39,7 @@ import com.scompany.wallpaper.R;
 import com.scompany.wallpaper.adapter.DataAdapter;
 import com.scompany.wallpaper.fragment.FragmentCategory;
 import com.scompany.wallpaper.model.Category;
+import com.scompany.wallpaper.model.Data;
 import com.scompany.wallpaper.utils.Contanst;
 
 import java.util.ArrayList;

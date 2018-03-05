@@ -6,32 +6,23 @@
     android:layout_height="match_parent"
     tools:context="com.scompany.wallpaper.activity.WallPaperActivity">
 
-    <LinearLayout
+
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:theme="@style/AppTheme.NoActionBar.AppBarOverlay.Custom">
 
-        <android.support.design.widget.AppBarLayout
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.NoActionBar.AppBarOverlay.Custom">
+            android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/AppTheme.NoActionBar.PopupOverlay" />
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_scrollFlags="scroll|enterAlways"
-                app:popupTheme="@style/AppTheme.NoActionBar.PopupOverlay" />
 
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="#FFFFFF"
-                app:tabGravity="fill"
-                app:tabMode="fixed" />
-        </android.support.design.widget.AppBarLayout>
 
-        <include layout="@layout/content_wall_paper" />
-    </LinearLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <include layout="@layout/content_wall_paper" />
 </android.support.design.widget.CoordinatorLayout>
