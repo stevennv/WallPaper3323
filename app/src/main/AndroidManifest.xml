@@ -28,7 +28,8 @@
         <!-- android:name=".activity.WallPaperActivity" -->
         <!-- android:label="@string/title_activity_wall_paper" -->
         <!-- android:theme="@style/AppTheme.NoActionBar"></activity> -->
-        <activity android:name=".activity.LikedImageActivity"></activity>
+        <activity android:name=".activity.LikedImageActivity" />
+        <activity android:name=".activity.DownLoadActivity"></activity>
     </application>
 
 </manifest>

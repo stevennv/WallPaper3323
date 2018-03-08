@@ -4,30 +4,35 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_download"
-            android:title="Downloaded" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_liked"
-            android:title="Liked" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Option">
         <menu>
+            <item
+                android:id="@+id/nav_camera"
+                android:icon="@drawable/ic_download"
+                android:title="Downloaded" />
+            <item
+                android:id="@+id/nav_gallery"
+                android:icon="@drawable/ic_liked"
+                android:title="Liked" />
+            <item
+                android:id="@+id/nav_manage"
+                android:icon="@drawable/ic_feedback"
+                android:title="Send feedback" />
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:title="Share app" />
+            <item
+                android:id="@+id/nav_info"
+                android:icon="@drawable/ic_info"
+                android:title="App info"/>
             <item
                 android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:icon="@drawable/ic_exit_to_app"
+                android:title="Exit" />
         </menu>
     </item>
 

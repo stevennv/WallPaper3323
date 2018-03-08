@@ -1,10 +1,12 @@
 package com.scompany.wallpaper.model;
 
+import java.io.Serializable;
+
 /**
  * Created by Admin on 3/1/2018.
  */
 
-public class ImageFavorite {
+public class ImageFavorite implements Serializable {
     private int id;
     private String name;
     private String src;

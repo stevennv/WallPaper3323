@@ -1,0 +1,5 @@
+<p>&nbsp;</p>
+<pre>App name :  <br />Love Quotes - Wall Paper </pre>
+<pre>Company : <br />SCompany </pre>
+<pre>More app in :<br /><a href="https://play.google.com/store/apps/developer?id=SCompany">https://play.google.com/store/apps/developer?id=SCompany</a></pre>
+<p>&nbsp;</p>

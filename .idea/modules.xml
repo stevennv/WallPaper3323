@@ -3,8 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://C:\Users\Admin\Documents\WallPaper12\WallPaper.iml" filepath="C:\Users\Admin\Documents\WallPaper12\WallPaper.iml" />
-      <module fileurl="file://$PROJECT_DIR$/WallPaper12.iml" filepath="$PROJECT_DIR$/WallPaper12.iml" />
+      <module fileurl="file://C:\Users\Admin\Documents\WallPaper3\WallPaper12.iml" filepath="C:\Users\Admin\Documents\WallPaper3\WallPaper12.iml" />
       <module fileurl="file://C:\Users\admin pc\Documents\WallPaper\WallPaper12.iml" filepath="C:\Users\admin pc\Documents\WallPaper\WallPaper12.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WallPaper3.iml" filepath="$PROJECT_DIR$/WallPaper3.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

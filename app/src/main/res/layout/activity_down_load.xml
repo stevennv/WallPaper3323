@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.scompany.wallpaper.activity.DetailImageActivity">
+    tools:context="com.scompany.wallpaper.activity.DownLoadActivity">
 
     <ImageView
         android:id="@+id/img_close"

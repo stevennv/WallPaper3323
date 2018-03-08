@@ -1,6 +1,7 @@
 package com.scompany.wallpaper.activity;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -37,9 +38,11 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.scompany.wallpaper.R;
 import com.scompany.wallpaper.adapter.DataAdapter;
+import com.scompany.wallpaper.dialog.InfoDialog;
 import com.scompany.wallpaper.fragment.FragmentCategory;
 import com.scompany.wallpaper.model.Category;
 import com.scompany.wallpaper.model.Data;
+import com.scompany.wallpaper.utils.CommonUtil;
 import com.scompany.wallpaper.utils.Contanst;
 
 import java.util.ArrayList;
@@ -101,7 +104,9 @@ public class WallPaperActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+//            return true;
+            InfoDialog dialog = new InfoDialog(this);
+            dialog.show();
         }
 
         return super.onOptionsItemSelected(item);
@@ -114,16 +119,29 @@ public class WallPaperActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
+            Intent intent = new Intent(WallPaperActivity.this, LikedImageActivity.class);
+            intent.putExtra(Contanst.TYPE, "Downloaded");
+            startActivity(intent);
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
             Intent intent = new Intent(WallPaperActivity.this, LikedImageActivity.class);
+            intent.putExtra(Contanst.TYPE, "Liked");
             startActivity(intent);
         } else if (id == R.id.nav_manage) {
-
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/html");
+            intent.putExtra(Intent.EXTRA_EMAIL, "");
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Mail feed back");
+            intent.putExtra(Intent.EXTRA_TEXT, "");
+            intent.setType("text/plain");
+            startActivity(Intent.createChooser(intent, "Send Email"));
         } else if (id == R.id.nav_share) {
-
+            CommonUtil.shareApp(this);
+        } else if (id == R.id.nav_info) {
+            InfoDialog dialog = new InfoDialog(this);
+            dialog.show();
         } else if (id == R.id.nav_send) {
-
+            this.finishAffinity();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
