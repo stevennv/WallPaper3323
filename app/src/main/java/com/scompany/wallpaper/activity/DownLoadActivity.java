@@ -8,23 +8,25 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.scompany.wallpaper.R;
 import com.scompany.wallpaper.adapter.ListImageAdapter;
 import com.scompany.wallpaper.model.ImageFavorite;
 import com.scompany.wallpaper.model.Images;
 import com.scompany.wallpaper.utils.BasicImageDownloader;
 import com.scompany.wallpaper.utils.CommonUtil;
-import com.scompany.wallpaper.utils.Contanst;
 import com.scompany.wallpaper.utils.DatabaseLike;
 
 import java.io.File;
@@ -47,11 +49,13 @@ public class DownLoadActivity extends AppCompatActivity implements View.OnClickL
     private Bitmap bitmap;
     private List<ImageFavorite> imageFavorites;
     private String urlImage;
+    private AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_down_load);
+        MobileAds.initialize(this, getString(R.string.app_id_admod));
 //        iniUI();
     }
 
@@ -71,6 +75,9 @@ public class DownLoadActivity extends AppCompatActivity implements View.OnClickL
         imgLike = findViewById(R.id.img_like);
         imgClose = findViewById(R.id.img_close);
         progressBar = findViewById(R.id.progressBar);
+        adView = findViewById(R.id.adview);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
         if (getIntent() != null) {
             imageFavorites = database.getAllImage(true);
             int pos = getIntent().getIntExtra("position", 0);

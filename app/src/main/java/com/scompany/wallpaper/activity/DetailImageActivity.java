@@ -21,6 +21,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.scompany.wallpaper.R;
 import com.scompany.wallpaper.adapter.ListImageAdapter;
 import com.scompany.wallpaper.model.Data;
@@ -52,11 +55,13 @@ public class DetailImageActivity extends AppCompatActivity implements View.OnCli
     private boolean checkLike;
     private Bitmap bitmap;
     private ImageView imgClose;
+    private AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_image);
+        MobileAds.initialize(this, getString(R.string.app_id_admod));
         iniUI();
     }
 
@@ -95,6 +100,9 @@ public class DetailImageActivity extends AppCompatActivity implements View.OnCli
             }
         });
         checkLikeImage(urlImage);
+        adView = findViewById(R.id.adview);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
         imgCopyLink.setOnClickListener(this);
         imgDownload.setOnClickListener(this);
         imgShare.setOnClickListener(this);
@@ -200,7 +208,7 @@ public class DetailImageActivity extends AppCompatActivity implements View.OnCli
                                         BasicImageDownloader.writeToDisk(myImageFile, result, new BasicImageDownloader.OnBitmapSaveListener() {
                                             @Override
                                             public void onBitmapSaved() {
-                                                Toast.makeText(DetailImageActivity.this, "Image saved as: " + myImageFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
+                                                Toast.makeText(DetailImageActivity.this, "Saved in : WallPaper_Android/" + nameImage + "." + mFormat.name().toLowerCase(), Toast.LENGTH_LONG).show();
                                                 dialog.dismiss();
                                                 if (isShare) {
                                                     shareImage();
@@ -265,7 +273,7 @@ public class DetailImageActivity extends AppCompatActivity implements View.OnCli
                         BasicImageDownloader.writeToDisk(myImageFile, result, new BasicImageDownloader.OnBitmapSaveListener() {
                             @Override
                             public void onBitmapSaved() {
-                                Toast.makeText(DetailImageActivity.this, "Image saved as: " + myImageFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(DetailImageActivity.this, "Saved in : WallPaper_Android/" + nameImage + "." + mFormat.name().toLowerCase(), Toast.LENGTH_LONG).show();
                                 dialog.dismiss();
                                 imageFavorite = new ImageFavorite(nameImage, data.getImages()[viewPager.getCurrentItem()].getImg(), false);
                                 database.addImage(imageFavorite, false);

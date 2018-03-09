@@ -8,6 +8,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.scompany.wallpaper.R;
 import com.scompany.wallpaper.adapter.LikedAdapter;
 import com.scompany.wallpaper.model.ImageFavorite;
@@ -25,11 +28,12 @@ public class LikedImageActivity extends AppCompatActivity {
     private LikedAdapter adapter;
     private Toolbar toolbar;
     private TextView tvTitleToolbar;
-
+    private AdView adView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_liked_image);
+        MobileAds.initialize(this, getString(R.string.app_id_admod));
         iniUI();
     }
 
@@ -49,6 +53,9 @@ public class LikedImageActivity extends AppCompatActivity {
         rvLiked = findViewById(R.id.rv_liked);
         layoutManager = new GridLayoutManager(this, 2);
         rvLiked.setLayoutManager(layoutManager);
+        adView = findViewById(R.id.adview);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
         if (getIntent() != null) {
             String type = getIntent().getStringExtra(Contanst.TYPE);
             tvTitleToolbar.setText(type);

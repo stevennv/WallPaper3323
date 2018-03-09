@@ -35,6 +35,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.gson.Gson;
 import com.scompany.wallpaper.R;
 import com.scompany.wallpaper.adapter.DataAdapter;
@@ -59,7 +62,7 @@ public class WallPaperActivity extends AppCompatActivity
     private Toolbar toolbar;
     private String valuesCategory;
     private String valuesColor;
-
+    private AdView adView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +70,7 @@ public class WallPaperActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        MobileAds.initialize(this, getString(R.string.app_id_admod));
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -130,7 +134,7 @@ public class WallPaperActivity extends AppCompatActivity
         } else if (id == R.id.nav_manage) {
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/html");
-            intent.putExtra(Intent.EXTRA_EMAIL, "");
+            intent.putExtra(Intent.EXTRA_EMAIL, "truongnguyenvan@vccorp.vn");
             intent.putExtra(Intent.EXTRA_SUBJECT, "Mail feed back");
             intent.putExtra(Intent.EXTRA_TEXT, "");
             intent.setType("text/plain");
@@ -150,23 +154,18 @@ public class WallPaperActivity extends AppCompatActivity
     }
 
     private void iniUI() {
-
         gson = new Gson();
         tabs = findViewById(R.id.tabs);
-
-
         viewPager = findViewById(R.id.viewpager);
         tabs.setupWithViewPager(viewPager);
-
+        adView = findViewById(R.id.adview);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
         getCategory();
-//
-//        Glide.with(this).load("http://78.media.tumblr.com/a925866afba3e8d30f967adec19aa4b4/tumblr_ojvoytrANV1vh1qxzo1_500.jpg").into(imageView);
-//        getData("http://cdn.skollabs.com/love/v1/Popular.js");
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 10) {
             boolean permission1 = grantResults[0] == PackageManager.PERMISSION_GRANTED;
             boolean permission2 = grantResults[1] == PackageManager.PERMISSION_GRANTED;

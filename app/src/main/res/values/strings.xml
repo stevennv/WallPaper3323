@@ -6,4 +6,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="admob_title">ca-app-pub-8239410640008358/2011841825</string>
+    <string name="admob_full_screen">ca-app-pub-8239410640008358/8063967057</string>
+    <string name="app_id_admod">ca-app-pub-8239410640008358~1684538760</string>
 </resources>
