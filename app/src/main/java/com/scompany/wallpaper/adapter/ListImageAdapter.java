@@ -75,4 +75,5 @@ public class ListImageAdapter extends PagerAdapter {
         container.addView(itemView);
         return itemView;
     }
+
 }

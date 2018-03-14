@@ -2,11 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
-
-    <group android:checkableBehavior="single">
-
-    </group>
-
     <item android:title="Option">
         <menu>
             <item
@@ -28,12 +23,11 @@
             <item
                 android:id="@+id/nav_info"
                 android:icon="@drawable/ic_info"
-                android:title="App info"/>
+                android:title="App info" />
             <item
                 android:id="@+id/nav_send"
                 android:icon="@drawable/ic_exit_to_app"
                 android:title="Exit" />
         </menu>
     </item>
-
 </menu>
